@@ -35,4 +35,29 @@ export const obrasService = {
     }
     return response.json();
   },
+
+  async updateObra(id: number, data: UpdateObraDto): Promise<Obra> {
+    const response = await fetch(`${API_BASE_URL}/obras/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Falha ao atualizar obra.');
+    }
+    return response.json();
+  },
+
+  async deleteObra(id: number): Promise<void> {
+    const response = await fetch(`${API_BASE_URL}/obras/${id}`, {
+      method: 'DELETE',
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Falha ao remover obra.');
+    }
+  },
 };
