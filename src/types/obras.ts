@@ -18,12 +18,12 @@ export interface CreateObraDto {
   descricao: string;
   status: 'Planejada' | 'Em andamento' | 'Concluída' | 'Paralisada';
   data_inicio: string;
-  data_conclusao?: string;
+  data_conclusao?: string | null;
   orcamento_total: number;
   gastos_atualizados?: number;
   percentual_concluido?: number;
-  latitude?: number;
-  longitude?: number;
+  latitude?: number | null;
+  longitude?: number | null;
   fornecedoresId?: number[];
   equipamentosId?: number[];
 }
@@ -33,12 +33,12 @@ export interface UpdateObraDto {
   descricao?: string;
   status?: 'Planejada' | 'Em andamento' | 'Concluída' | 'Paralisada';
   data_inicio?: string;
-  data_conclusao?: string;
+  data_conclusao?: string | null;
   orcamento_total?: number;
   gastos_atualizados?: number;
   percentual_concluido?: number;
-  latitude?: number;
-  longitude?: number;
+  latitude?: number | null;
+  longitude?: number | null;
   fornecedoresId?: number[];
   equipamentosId?: number[];
 }
