@@ -12,4 +12,27 @@ export const obrasService = {
     return response.json();
   },
 
+  async getObraById(id: number): Promise<Obra> {
+    const response = await fetch(`${API_BASE_URL}/obras/${id}`);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Obra não encontrada.');
+    }
+    return response.json();
+  },
+
+  async createObra(data: CreateObraDto): Promise<Obra> {
+    const response = await fetch(`${API_BASE_URL}/obras`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Falha ao criar obra.');
+    }
+    return response.json();
+  },
 };
