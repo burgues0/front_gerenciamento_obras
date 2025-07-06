@@ -27,7 +27,6 @@ export default function Header() {
       className="text-white p-4 shadow-2xl"
     >
       <div className="container mx-auto flex justify-between items-center">
-        {/* Logo ajustada */}
         <div className="flex items-center h-10">
           <img
         src="/logo.png"
