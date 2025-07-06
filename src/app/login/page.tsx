@@ -20,7 +20,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/auth/login", {
+      const res = await fetch("http://127.0.0.1:5000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha: password }),
@@ -34,7 +34,8 @@ export default function LoginPage() {
         throw new Error(msg);
       }
       const data = await res.json();
-      document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;
+      localStorage.setItem('access-token', data.token);
+      document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;      
       // Redireciona para a página original, se houver
       const redirectTo = searchParams.get("redirect") || "/";
       window.location.href = redirectTo;

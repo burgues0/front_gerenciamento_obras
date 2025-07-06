@@ -39,7 +39,7 @@ export default function LoginPage() {
     try {
       if (isRegister) {
         // Cadastro de usuário
-        const res = await fetch("http://localhost:3000/usuarios", {
+        const res = await fetch("http://127.0.0.1:3000/usuarios", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ nome, email, senha: password }),
@@ -60,7 +60,7 @@ export default function LoginPage() {
         return;
       }
       // Login
-      const res = await fetch("http://localhost:3000/login", {
+      const res = await fetch("http://127.0.0.1:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, senha: password }),

@@ -1,10 +1,20 @@
 import { Obra, CreateObraDto, UpdateObraDto } from '@/types/obras';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://127.0.0.1:3000/api';
+
+function authHeaders(): HeadersInit {
+  const token = localStorage.getItem('access-token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
 
 export const obrasService = {
   async getAllObras(): Promise<Obra[]> {
-    const response = await fetch(`${API_BASE_URL}/obras`);
+    const response = await fetch(`${API_BASE_URL}/obras`, {
+      credentials: 'include',
+      headers: {
+        ...authHeaders(),
+      }
+    });
     if (!response.ok) {
       const errorData = await response.json();
       throw new Error(errorData.message || 'Falha ao listar obras.');
