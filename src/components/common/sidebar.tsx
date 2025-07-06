@@ -1,24 +1,17 @@
 import React from 'react';
 import Link from 'next/link';
-import { Building2, Users, HardHat, Package, FileText, Factory, ClipboardCheck, ScrollText, Settings } from 'lucide-react';
+import { Building2, HardHat, Package, FileText, Factory, ClipboardCheck, ScrollText, BookOpen, ListChecks } from 'lucide-react';
 
 export default function Sidebar() {
   return (
-    <aside className="w-64 text-white p-4 h-full flex flex-col">
-      <h2 className="text-xl font-semibold mb-6">GEOBRAP</h2>
-
+    <aside className="w-60 text-white p-4 min-h-screen flex flex-col" style={{ background: '#2E2E2E' }}>
+      {/* Removido o topo laranja */}
       <nav className="flex-grow flex flex-col min-h-0">
         <ul className="flex-grow overflow-auto space-y-2">
           <li>
             <Link href="/obras" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
               <Building2 className="w-5 h-5" />
               Obras
-            </Link>
-          </li>
-          <li>
-            <Link href="/usuarios" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-              <Users className="w-5 h-5" />
-              Usuários
             </Link>
           </li>
           <li>
@@ -47,7 +40,7 @@ export default function Sidebar() {
           </li>
           <li>
             <Link href="/responsaveis-tecnicos" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-              <Users className="w-5 h-5" />
+              <FileText className="w-5 h-5" />
               Responsáveis Técnicos
             </Link>
           </li>
@@ -58,9 +51,15 @@ export default function Sidebar() {
             </Link>
           </li>
           <li>
-            <Link href="/configuracoes" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
-              <Settings className="w-5 h-5" />
-              Configurações
+            <Link href="/diario-obra" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
+              <BookOpen className="w-5 h-5" />
+              Diário Obra
+            </Link>
+          </li>
+          <li>
+            <Link href="/etapas-obra" className="flex items-center gap-2 py-2 px-4 rounded-md hover:bg-gray-700 transition-colors">
+              <ListChecks className="w-5 h-5" />
+              Etapas Obra
             </Link>
           </li>
         </ul>

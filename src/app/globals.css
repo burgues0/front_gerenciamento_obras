@@ -11,6 +11,7 @@ body {
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #F9F9F9;
 }
 
 * {
@@ -97,4 +98,41 @@ a {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Adicionando estilos customizados para o link HOME */
+.header-home-link {
+  font-size: 0.9rem; /* reduzido, ajuste conforme necessário */
+  font-weight: 500;
+  position: relative;
+  padding-bottom: 6px; /* aumenta o espaço entre a palavra e a linha */
+  transition: color 0.2s;
+}
+.header-home-link.active::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1.8px;
+  background: #2C607A;
+  border-radius: 2px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .header-home-link:hover {
+    color: #f0f0f0 !important;
+  }
+}
+
+/* Forçar fundo branco nos campos de input mesmo quando o navegador aplica autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #222 !important;
+  caret-color: #222 !important;
+  color: #222 !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
