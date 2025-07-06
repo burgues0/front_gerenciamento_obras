@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { User, Lock } from "lucide-react";
+import { API_CONFIG } from "@/lib/config";
+import { AuthService } from "@/lib/api";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,20 +22,7 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, senha: password }),
-      });
-      if (!res.ok) {
-        let msg = "Usuário ou senha inválidos";
-        try {
-          const errData = await res.json();
-          msg = errData.message || JSON.stringify(errData);
-        } catch {}
-        throw new Error(msg);
-      }
-      const data = await res.json();
+      const data = await AuthService.login(email, password);
       document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;
       const redirectTo = searchParams.get("redirect") || "/";
       window.location.href = redirectTo;
