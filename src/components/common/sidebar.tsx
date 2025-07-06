@@ -5,7 +5,7 @@ import { Building2, HardHat, Package, FileText, Factory, ClipboardCheck, ScrollT
 export default function Sidebar() {
   return (
     <aside className="w-60 text-white p-4 min-h-screen flex flex-col" style={{ background: '#2E2E2E' }}>
-      {/* Removido o topo laranja */}
+  
       <nav className="flex-grow flex flex-col min-h-0">
         <ul className="flex-grow overflow-auto space-y-2">
           <li>

@@ -100,12 +100,11 @@ a {
   }
 }
 
-/* Adicionando estilos customizados para o link HOME */
 .header-home-link {
-  font-size: 0.9rem; /* reduzido, ajuste conforme necessário */
+  font-size: 0.9rem; 
   font-weight: 500;
   position: relative;
-  padding-bottom: 6px; /* aumenta o espaço entre a palavra e a linha */
+  padding-bottom: 6px; 
   transition: color 0.2s;
 }
 .header-home-link.active::after {

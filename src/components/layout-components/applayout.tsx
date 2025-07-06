@@ -12,10 +12,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <div className="flex-grow flex h-full min-h-0 bg-[#F9F9F9]"> {/*sidebar+main*/}
+      <div className="flex-grow flex h-full min-h-0 bg-[#F9F9F9]"> 
         <Sidebar />
         <MainContent>
-          {children} {/*conteudo*/}
+          {children} 
         </MainContent>
       </div>
       <Footer />

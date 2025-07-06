@@ -35,7 +35,6 @@ export default function LoginPage() {
       }
       const data = await res.json();
       document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;
-      // Redireciona para a página original, se houver
       const redirectTo = searchParams.get("redirect") || "/";
       window.location.href = redirectTo;
     } catch (err: any) {

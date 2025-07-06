@@ -4,7 +4,7 @@ import Image from "next/image";
 export default function Home() {
   return (
     <AppLayout>
-      {/* Imagem de capa ocupando toda a largura, preenchendo as bordas laterais */}
+      
       <div className="relative w-full h-[220px] min-h-[220px]">
         <Image
           src="/capa.png"
@@ -13,10 +13,10 @@ export default function Home() {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
           priority
         />
-        {/* Texto sobre a imagem */}
+        
         <div className="absolute inset-0 flex flex-col justify-center items-start pl-40 w-full" style={{ maxWidth: 800 }}>
           <h2 className="text-xl font-extrabold text-white mb-1 leading-tight drop-shadow-lg text-left">Indústria<br />Inovação e<br />Infraestrutura</h2>
-          <div className="h-4" /> {/* Espaço entre os textos */}
+          <div className="h-4" /> 
           <p className="text-white text-sm font-medium drop-shadow-md text-left">Cada etapa sob controle.<br />Cada obra no caminho certo!</p>
         </div>
       </div>
