@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:14-alpine
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "${DB_EXT_PORT}:5432"
+    networks:
+      - app_network
+
+  auth-api:
+    build:
+      context: ./auth-api
+      dockerfile: Dockerfile
+    container_name: auth_api
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      NODE_ENV: development
+      DATABASE_URL: postgresql://postgres.fpvozizpfgohltxujgeo:cefetmg@aws-0-sa-east-1.pooler.supabase.com:6543/postgres
+      JWT_SECRET: ${JWT_SECRET}
+      GMAIL_USER: domain.gmail.com
+      GMAIL_APP_PASSWORD: create_gmail_password
+    networks:
+      - app_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend_api
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: 5432
+      DB_EXT_PORT: 15432
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      TOKEN_VALIDATOR_API_URL: ${TOKEN_VALIDATOR_API_URL}
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
+    depends_on:
+      - db
+      - auth-api
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    networks:
+      - app_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_app
+    restart: always
+    ports:
+      - "3002:3002"
+    environment:
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:3001
+    depends_on:
+      - backend
+    networks:
+      - app_network
+
+volumes:
+  pgdata:
+
+networks:
+  app_network:
+    driver: bridge
