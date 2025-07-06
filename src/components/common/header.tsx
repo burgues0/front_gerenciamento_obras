@@ -1,5 +1,6 @@
 "use client";
 import React from 'react';
+import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 
 function LogoutButton() {
@@ -28,13 +29,15 @@ export default function Header() {
     >
       <div className="container mx-auto flex justify-between items-center">
         <div className="flex items-center h-10">
-          <img
-        src="/logo.png"
-        alt="Logo"
-        style={{ height: 45, width: 'auto', objectFit: 'contain', display: 'block' }}
-        className="drop-shadow"
-        draggable={false}
-          />
+          <Link href="/">
+            <img
+              src="/logo.png"
+              alt="Logo"
+              style={{ height: 45, width: 'auto', objectFit: 'contain', display: 'block' }}
+              className="drop-shadow cursor-pointer"
+              draggable={false}
+            />
+          </Link>
         </div>
         <nav>
           <ul className="flex space-x-4 items-center">

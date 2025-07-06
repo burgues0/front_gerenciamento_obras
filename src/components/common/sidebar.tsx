@@ -21,18 +21,11 @@ export default function Sidebar() {
     }
   }, [pathname]);
 
-  useEffect(() => {
-    if (pathname !== '/') {
-      const timer = setTimeout(() => {
-        setIsMinimized(true);
-        localStorage.setItem('sidebarMinimized', 'true');
-      }, 500);
-      
-      return () => clearTimeout(timer);
-    }
-  }, [pathname]);
-
   const handleItemClick = () => {
+    if (pathname !== '/') {
+      setIsMinimized(true);
+      localStorage.setItem('sidebarMinimized', 'true');
+    }
   };
 
   const handleToggleSidebar = () => {
@@ -54,12 +47,26 @@ export default function Sidebar() {
             style={{ transition: 'background-color 0.2s' }}
             onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#343434'}
             onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            title="Expandir menu"
           >
             <Menu className="w-5 h-5" />
           </button>
         </div>
       ) : (
         <nav className="flex-grow flex flex-col min-h-0">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-semibold pl-4">Menu</h2>
+            <button
+              onClick={handleToggleSidebar}
+              className="p-2 rounded-md transition-colors"
+              style={{ transition: 'background-color 0.2s' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#343434'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+              title="Minimizar menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
           <ul className="flex-grow overflow-auto space-y-2">
             <li>
               <Link 
