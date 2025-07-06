@@ -14,18 +14,16 @@ export default function Sidebar() {
       setIsMinimized(false);
       localStorage.setItem('sidebarMinimized', 'false');
     } else {
-      const savedState = localStorage.getItem('sidebarMinimized');
-      if (savedState === 'true') {
+      const timer = setTimeout(() => {
         setIsMinimized(true);
-      }
+        localStorage.setItem('sidebarMinimized', 'true');
+      }, 100);
+      
+      return () => clearTimeout(timer);
     }
   }, [pathname]);
 
   const handleItemClick = () => {
-    if (pathname !== '/') {
-      setIsMinimized(true);
-      localStorage.setItem('sidebarMinimized', 'true');
-    }
   };
 
   const handleToggleSidebar = () => {

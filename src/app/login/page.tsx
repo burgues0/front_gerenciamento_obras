@@ -21,13 +21,44 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     setError("");
+    
     try {
       const data = await AuthService.login(email, password);
       document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;
       const redirectTo = searchParams.get("redirect") || "/";
       window.location.href = redirectTo;
     } catch (err: any) {
-      setError(err.message || "Erro ao fazer login");
+      console.error('Erro de autenticação:', {
+        message: err.message,
+        status: err.status,
+        statusText: err.statusText,
+        data: err.data,
+        fullError: err
+      });
+      
+      if (err.message && !err.message.includes('Erro HTTP')) {
+        setError(err.message);
+      } else {
+        switch (err.status) {
+          case 401:
+            setError("Credenciais inválidas. Verifique seu email e senha.");
+            break;
+          case 403:
+            setError("Acesso negado. Conta não autorizada.");
+            break;
+          case 404:
+            setError("Serviço de autenticação não encontrado.");
+            break;
+          case 500:
+            setError("Erro interno do servidor. Tente novamente mais tarde.");
+            break;
+          case 0:
+            setError("Erro de conexão. Verifique se o servidor está rodando.");
+            break;
+          default:
+            setError("Erro ao fazer login. Tente novamente.");
+        }
+      }
     } finally {
       setLoading(false);
     }
@@ -57,7 +88,10 @@ export default function LoginPage() {
                   className="pl-11 py-5 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-300 transition-all font-sans placeholder:text-gray-300 text-lg"
                   style={{ fontFamily: 'Inter, Arial, sans-serif' }}
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (error) setError("");
+                  }}
                   required
                 />
               </div>
@@ -75,13 +109,27 @@ export default function LoginPage() {
                   className="pl-11 py-5 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-300 transition-all font-sans placeholder:text-gray-300 text-lg"
                   style={{ fontFamily: 'Inter, Arial, sans-serif' }}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (error) setError("");
+                  }}
                   required
                 />
               </div>
             </div>
             {error && (
-              <div className="text-red-500 text-sm text-center font-medium mt-2">{error}</div>
+              <div className="bg-red-50 border border-red-200 rounded-xl p-4 mt-4">
+                <div className="flex items-center">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-medium text-red-800">{error}</p>
+                  </div>
+                </div>
+              </div>
             )}
           </CardContent>
           <CardFooter className="flex flex-col space-y-4 pt-2">

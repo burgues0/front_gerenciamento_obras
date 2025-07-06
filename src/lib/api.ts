@@ -26,18 +26,64 @@ export class ApiClient {
 
   static async post(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false) {
     const baseUrl = this.getBaseUrl(isAuthEndpoint);
-    const response = await fetch(`${baseUrl}${endpoint}`, {
-      method: 'POST',
-      headers: this.getHeaders(includeAuth),
-      body: JSON.stringify(data),
-    });
+    
+    try {
+      const response = await fetch(`${baseUrl}${endpoint}`, {
+        method: 'POST',
+        headers: this.getHeaders(includeAuth),
+        body: JSON.stringify(data),
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || 'Erro na requisição');
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (jsonError) {
+          errorData = {};
+        }
+        
+        let errorMessage = errorData.message || 
+                          errorData.error || 
+                          errorData.msg || 
+                          errorData.detail || 
+                          errorData.description ||
+                          errorData.mensagem;
+        
+        if (!errorMessage) {
+          switch (response.status) {
+            case 401:
+              errorMessage = "Credenciais inválidas";
+              break;
+            case 403:
+              errorMessage = "Acesso negado";
+              break;
+            case 404:
+              errorMessage = "Recurso não encontrado";
+              break;
+            case 500:
+              errorMessage = "Erro interno do servidor";
+              break;
+            default:
+              errorMessage = `Erro HTTP ${response.status}`;
+          }
+        }
+        
+        const error = new Error(errorMessage);
+        (error as any).status = response.status;
+        (error as any).statusText = response.statusText;
+        (error as any).data = errorData;
+        throw error;
+      }
+
+      return response.json();
+    } catch (err: any) {
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        const networkError = new Error('Erro de conexão. Verifique se o servidor está rodando.');
+        (networkError as any).status = 0;
+        throw networkError;
+      }
+      throw err;
     }
-
-    return response.json();
   }
 
   static async get(endpoint: string, includeAuth = true, isAuthEndpoint = false) {

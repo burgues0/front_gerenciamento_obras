@@ -5,6 +5,15 @@ export function middleware(request: NextRequest) {
   const isLoginRoute = pathname.startsWith('/login');
   const isLogged = request.cookies.get('auth-token');
 
+  // Permitir acesso a todos os arquivos estáticos
+  if (pathname.startsWith('/_next') || 
+      pathname.startsWith('/api') || 
+      pathname.includes('.') || // Qualquer arquivo com extensão
+      pathname.startsWith('/favicon') ||
+      pathname.startsWith('/icon')) {
+    return NextResponse.next();
+  }
+
   if (!isLoginRoute && !isLogged) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = '/login';
@@ -30,5 +39,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!_next|api|favicon.ico|public).*)'],
+  matcher: ['/((?!_next|api|favicon|icon|.*\\.).*)', '/((?!public).*)'],
 };
