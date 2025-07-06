@@ -31,6 +31,26 @@ export default function DeleteObraButton({ obraId, onSuccess }: DeleteObraButton
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <DialogTrigger asChild>
+        <Button variant="destructive" size="sm">Remover</Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Confirmar Exclusão</DialogTitle>
+          <DialogDescription>
+            Tem certeza que deseja remover esta obra? Esta ação não pode ser desfeita.
+          </DialogDescription>
+        </DialogHeader>
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+        <DialogFooter>
+          <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isLoading}>
+            Cancelar
+          </Button>
+          <Button variant="destructive" onClick={handleDelete} disabled={isLoading}>
+            {isLoading ? "Removendo..." : "Confirmar"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
     </Dialog>
   );
 }
