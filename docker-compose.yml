@@ -1,52 +1,47 @@
 version: '3.8'
 
 services:
-  # Serviço de Banco de Dados (PostgreSQL)
   db:
     image: postgres:14-alpine
-    container_name: postgres_db # Nome do contêiner para fácil identificação
+    container_name: postgres_db
     restart: always
     environment:
       POSTGRES_DB: ${DB_DATABASE}
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
-      - pgdata:/var/lib/postgresql/data # Persiste os dados do banco de dados
+      - pgdata:/var/lib/postgresql/data
     ports:
-      - "${DB_EXT_PORT}:5432" # Mapeia a porta 5432 do contêiner para uma porta externa no host
+      - "${DB_EXT_PORT}:5432"
     networks:
-      - app_network # Conecta o serviço à rede compartilhada do Docker Compose
+      - app_network
 
-  # Serviço da API de Autenticação (Express.js, Porta 5000)
   auth-api:
     build:
-      context: ./auth-api # Caminho para o diretório do seu Dockerfile da API de Autenticação
+      context: ./auth-api
       dockerfile: Dockerfile
-    container_name: auth_api # Nome do contêiner
+    container_name: auth_api
     restart: always
     ports:
-      - "5000:5000" # Mapeia a porta 5000 do contêiner para a porta 5000 do host
+      - "5000:5000"
     environment:
       NODE_ENV: development
       DATABASE_URL: postgresql://postgres.fpvozizpfgohltxujgeo:cefetmg@aws-0-sa-east-1.pooler.supabase.com:6543/postgres
       JWT_SECRET: ${JWT_SECRET}
       GMAIL_USER: domain.gmail.com
       GMAIL_APP_PASSWORD: create_gmail_password
-      # Adicione outras variáveis de ambiente específicas da sua API de Autenticação aqui, se houver
     networks:
-      - app_network # Conecta o serviço à rede compartilhada
+      - app_network
 
-  # Serviço do Backend (API de Obras, NestJS, Porta 3000)
   backend:
     build:
-      context: ./backend # Caminho para o diretório do seu Dockerfile do Backend
+      context: ./backend
       dockerfile: Dockerfile
-    container_name: backend_api # Nome do contêiner
+    container_name: backend_api
     restart: always
     ports:
-      - "3000:3000" # Mapeia a porta 3000 do contêiner para a porta 3000 do host
+      - "3000:3000"
     environment:
-      # **Ajuste CRÍTICO aqui:** Use o nome do serviço 'auth-api' como host
       NODE_ENV: ${NODE_ENV}
       DB_HOST: ${DB_HOST}
       DB_PORT: 5432
@@ -55,43 +50,35 @@ services:
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
       TOKEN_VALIDATOR_API_URL: http://auth-api:5000/auth/validate
-      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE} # 'db' é o nome do serviço do DB
-      # JWT_SECRET: ${JWT_SECRET} # Se você usa JWT_SECRET, defina no seu arquivo .env
+      DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}
+      JWT_SECRET: ${JWT_SECRET}
     depends_on:
-      - db # O backend depende do banco de dados
-      - auth-api # O backend depende da API de Autenticação
+      - db
+      - auth-api
     volumes:
-      # Volumes para desenvolvimento (hot-reloading). Remova em produção se não precisar.
       - ./backend:/app
       - /app/node_modules
     networks:
-      - app_network # Conecta o serviço à rede compartilhada
+      - app_network
 
-  # Serviço do Frontend (Next.js, Porta 3001 no host, 3001 no contêiner)
   frontend:
     build:
-      context: ./frontend # Caminho para o diretório do seu Dockerfile do Frontend
+      context: ./frontend
       dockerfile: Dockerfile
-    container_name: frontend_app # Nome do contêiner
+    container_name: frontend_app
     restart: always
     ports:
-      - "3001:3001" # Mapeia a porta 3001 do contêiner (Next.js) para a porta 3001 do host
+      - "3001:3001"
     environment:
-      # Se seu frontend precisar da URL do backend, passe-a aqui
-      # Em Next.js, variáveis de ambiente prefixadas com NEXT_PUBLIC_ são expostas ao browser
-      NEXT_PUBLIC_BACKEND_URL: http://localhost:3001 # O frontend acessa o backend via a porta mapeada no host
-      # Ou, se você estiver acessando o backend de dentro do container Docker (ex: SSR, API Routes)
-      # BACKEND_URL_INTERNAL: http://backend:3001
+      NEXT_PUBLIC_BACKEND_URL: http://localhost:3001
     depends_on:
-      - backend # O frontend depende do backend
+      - backend
     networks:
-      - app_network # Conecta o serviço à rede compartilhada
+      - app_network
 
-# Definição de Volumes para persistência de dados do DB
 volumes:
   pgdata:
 
-# Definição da rede compartilhada para que todos os serviços possam se comunicar
 networks:
   app_network:
     driver: bridge
