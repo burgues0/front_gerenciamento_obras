@@ -66,7 +66,8 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="Digite seu email"
-                  className="pl-11 py-3 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-400 transition-all font-[Poppins,Inter,sans-serif]"
+                  className="pl-11 py-5 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-300 transition-all font-sans placeholder:text-gray-300 text-lg"
+                  style={{ fontFamily: 'Inter, Arial, sans-serif' }}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -83,7 +84,8 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   placeholder="Digite sua senha"
-                  className="pl-11 py-3 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-400 transition-all font-[Poppins,Inter,sans-serif]"
+                  className="pl-11 py-5 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-300 transition-all font-sans placeholder:text-gray-300 text-lg"
+                  style={{ fontFamily: 'Inter, Arial, sans-serif' }}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
