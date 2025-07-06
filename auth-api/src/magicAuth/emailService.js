@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
 
 export const sendMagicLinkEmail = async (email, magicToken, tokenJwt) => {
   const magicLink = `${
-    process.env.FRONTEND_URL || "http://localhost:3000"
+    process.env.FRONTEND_URL || "http://localhost:3001"
   }/auth/magic/verify?token=${magicToken}`;
 
   const mailOptions = {
@@ -141,7 +141,7 @@ export const sendWelcomeEmail = async (email, userName) => {
         </div>
 
         <div style="text-align: center; margin-top: 20px;">
-          <a href="${process.env.FRONTEND_URL || "http://localhost:3000"}" 
+          <a href="${process.env.FRONTEND_URL || "http://localhost:3001"}" 
             style="display: inline-block; background-color: #2196F3; color: white; padding: 12px 30px; 
                     text-decoration: none; border-radius: 25px; font-weight: 600; font-size: 15px; 
                     box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); transition: background 0.3s ease;">

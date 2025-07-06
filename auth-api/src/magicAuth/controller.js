@@ -37,7 +37,7 @@ export const magicAuthController = {
       res.json({
         success: true,
         message: "Link enviado! (Em prod isso não seria exibido)",
-        Link: `http://localhost:3000/auth/magic/verify?token=${magicToken}`,
+        Link: `http://localhost:3001/auth/magic/verify?token=${magicToken}`,
         TokenJwt: authToken, // Apenas para desenvolvimento
       });
     } catch (error) {
