@@ -46,29 +46,27 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl text-center">Login</CardTitle>
-          <CardDescription className="text-center">
-            Acesse o sistema com seu e-mail e senha
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#F9F9F9' }}>
+      <Card className="w-full max-w-md shadow-2xl rounded-3xl border-0 bg-white/95 backdrop-blur-md relative z-20 p-2">
+        <CardHeader className="space-y-1 pb-2">
+          <CardTitle className="text-3xl text-center font-extrabold tracking-tight font-[Poppins,Inter,sans-serif]" style={{ color: '#2C607A' }}>Login</CardTitle>
+          <CardDescription className="text-center text-gray-500 text-base">
+            Faça login para acessar o sistema
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6 pt-2">
             <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
-              </label>
+              <label htmlFor="email" className="text-sm font-semibold text-black font-[Poppins,Inter,sans-serif]">Email</label>
               <div className="relative">
-                <span className="absolute left-2.5 top-2.5 text-gray-500">
-                  <User className="h-4 w-4" />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F1860C]">
+                  <User className="h-5 w-5" />
                 </span>
                 <Input
                   id="email"
                   type="email"
                   placeholder="Digite seu email"
-                  className="pl-9"
+                  className="pl-11 py-3 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-400 transition-all font-[Poppins,Inter,sans-serif]"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -76,18 +74,16 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Senha
-              </label>
+              <label htmlFor="password" className="text-sm font-semibold text-black font-[Poppins,Inter,sans-serif]">Senha</label>
               <div className="relative">
-                <span className="absolute left-2.5 top-2.5 text-gray-500">
-                  <Lock className="h-4 w-4" />
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#F1860C]">
+                  <Lock className="h-5 w-5" />
                 </span>
                 <Input
                   id="password"
                   type="password"
                   placeholder="Digite sua senha"
-                  className="pl-9"
+                  className="pl-11 py-3 bg-white !bg-white border-2 border-gray-300 rounded-xl focus:border-[#F1860C] focus:ring-[#F1860C]/30 text-black placeholder:text-gray-400 transition-all font-[Poppins,Inter,sans-serif]"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -95,11 +91,11 @@ export default function LoginPage() {
               </div>
             </div>
             {error && (
-              <div className="text-red-600 text-sm text-center">{error}</div>
+              <div className="text-red-500 text-sm text-center font-medium mt-2">{error}</div>
             )}
           </CardContent>
-          <CardFooter className="flex flex-col space-y-4">
-            <Button type="submit" className="w-full" disabled={loading}>
+          <CardFooter className="flex flex-col space-y-4 pt-2">
+            <Button type="submit" className="w-full bg-[#F1860C] hover:bg-[#d97706] text-white font-bold shadow-lg rounded-xl py-3 text-lg transition-colors" disabled={loading}>
               {loading ? "Entrando..." : "Entrar"}
             </Button>
           </CardFooter>

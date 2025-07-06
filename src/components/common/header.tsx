@@ -1,6 +1,6 @@
 "use client";
 import React from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 function LogoutButton() {
   const router = useRouter();
@@ -11,7 +11,7 @@ function LogoutButton() {
   return (
     <button
       onClick={handleLogout}
-      className="ml-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+      className="ml-4 px-6 py-1 bg-[#2C607A] text-white rounded hover:bg-[#22506a] transition-colors"
     >
       Sair
     </button>
@@ -19,16 +19,38 @@ function LogoutButton() {
 }
 
 export default function Header() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
   return (
-    <header className="bg-blue-600 text-white p-4 shadow-md">
+    <header
+      style={{ background: '#F1860C', boxShadow: '0 16px 48px 0 rgba(0,0,0,0.28)', zIndex: 50, position: 'relative' }}
+      className="text-white p-4 shadow-2xl"
+    >
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-2xl font-bold">GEOBRAP - Gerenciamento de Obras Públicas</h1>
+        {/* Logo ajustada */}
+        <div className="flex items-center h-10">
+          <img
+        src="/logo.png"
+        alt="Logo"
+        style={{ height: 45, width: 'auto', objectFit: 'contain', display: 'block' }}
+        className="drop-shadow"
+        draggable={false}
+          />
+        </div>
         <nav>
           <ul className="flex space-x-4 items-center">
-            <li><a href="#" className="hover:text-blue-200">Início</a></li>
-            <li><a href="#" className="hover:text-blue-200">Sobre</a></li>
-            <li><a href="#" className="hover:text-blue-200">Contato</a></li>
-            <li><LogoutButton /></li>
+        <li>
+          <a
+            href="/"
+            className={
+          `header-home-link relative transition-colors duration-150 ` +
+          (isHome ? "active text-white" : "text-white")
+            }
+          >
+            Página inicial
+          </a>
+        </li>
+        <li><LogoutButton /></li>
           </ul>
         </nav>
       </div>
