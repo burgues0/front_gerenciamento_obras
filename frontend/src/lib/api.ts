@@ -1,19 +1,27 @@
 import { API_CONFIG } from './config';
 
 export class ApiClient {
-  private static getHeaders(includeAuth = true): Record<string, string> {
+  private static getHeaders(includeAuth = true, token?: string): Record<string, string> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
     };
 
-    if (includeAuth && typeof document !== 'undefined') {
-      const token = document.cookie
-        .split(';')
-        .find(row => row.trim().startsWith('auth-token='))
-        ?.split('=')[1];
-      
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
+    if (includeAuth) {
+      let authToken = token;
+      if (!authToken && typeof document !== 'undefined') {
+        // More robust cookie extraction
+        const cookies = document.cookie.split(';').map(c => c.trim());
+        for (const c of cookies) {
+          if (c.startsWith('auth-token=')) {
+            authToken = decodeURIComponent(c.substring('auth-token='.length));
+            break;
+          }
+        }
+        // Debug: log the token value
+        console.log('[ApiClient] Extracted auth-token from cookie:', authToken);
+      }
+      if (authToken) {
+        headers.Authorization = `Bearer ${authToken}`;
       }
     }
 
@@ -24,15 +32,19 @@ export class ApiClient {
     return isAuthEndpoint ? API_CONFIG.AUTH_BASE_URL : API_CONFIG.OBRAS_BASE_URL;
   }
 
-  static async post(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false) {
+  static async post(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false, token?: string) {
     const baseUrl = this.getBaseUrl(isAuthEndpoint);
     
     try {
-      const response = await fetch(`${baseUrl}${endpoint}`, {
+      const fetchOptions: RequestInit = {
         method: 'POST',
-        headers: this.getHeaders(includeAuth),
+        headers: this.getHeaders(includeAuth, token),
         body: JSON.stringify(data),
-      });
+      };
+      if (includeAuth && !token) {
+        fetchOptions.credentials = 'include';
+      }
+      const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
 
       if (!response.ok) {
         let errorData;
@@ -86,12 +98,16 @@ export class ApiClient {
     }
   }
 
-  static async get(endpoint: string, includeAuth = true, isAuthEndpoint = false) {
+  static async get(endpoint: string, includeAuth = true, isAuthEndpoint = false, token?: string) {
     const baseUrl = this.getBaseUrl(isAuthEndpoint);
-    const response = await fetch(`${baseUrl}${endpoint}`, {
+    const fetchOptions: RequestInit = {
       method: 'GET',
-      headers: this.getHeaders(includeAuth),
-    });
+      headers: this.getHeaders(includeAuth, token),
+    };
+    if (includeAuth && !token) {
+      fetchOptions.credentials = 'include';
+    }
+    const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -101,13 +117,17 @@ export class ApiClient {
     return response.json();
   }
 
-  static async put(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false) {
+  static async put(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false, token?: string) {
     const baseUrl = this.getBaseUrl(isAuthEndpoint);
-    const response = await fetch(`${baseUrl}${endpoint}`, {
+    const fetchOptions: RequestInit = {
       method: 'PUT',
-      headers: this.getHeaders(includeAuth),
+      headers: this.getHeaders(includeAuth, token),
       body: JSON.stringify(data),
-    });
+    };
+    if (includeAuth && !token) {
+      fetchOptions.credentials = 'include';
+    }
+    const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -117,12 +137,16 @@ export class ApiClient {
     return response.json();
   }
 
-  static async delete(endpoint: string, includeAuth = true, isAuthEndpoint = false) {
+  static async delete(endpoint: string, includeAuth = true, isAuthEndpoint = false, token?: string) {
     const baseUrl = this.getBaseUrl(isAuthEndpoint);
-    const response = await fetch(`${baseUrl}${endpoint}`, {
+    const fetchOptions: RequestInit = {
       method: 'DELETE',
-      headers: this.getHeaders(includeAuth),
-    });
+      headers: this.getHeaders(includeAuth, token),
+    };
+    if (includeAuth && !token) {
+      fetchOptions.credentials = 'include';
+    }
+    const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
 
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({}));
@@ -137,33 +161,33 @@ export const AuthService = {
   login: (email: string, senha: string) => 
     ApiClient.post(API_CONFIG.ENDPOINTS.AUTH.LOGIN, { email, senha }, false, true),
   
-  logout: () => 
-    ApiClient.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {}, true, true),
+  logout: (token?: string) => 
+    ApiClient.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT, {}, true, true, token),
   
-  verify: () => 
-    ApiClient.get(API_CONFIG.ENDPOINTS.AUTH.VERIFY, true, true),
+  verify: (token?: string) => 
+    ApiClient.get(API_CONFIG.ENDPOINTS.AUTH.VERIFY, true, true, token),
 };
 
 export const ObrasService = {
-  getAll: () => ApiClient.get(API_CONFIG.ENDPOINTS.OBRAS, true, false),
-  getById: (id: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, true, false),
-  create: (data: any) => ApiClient.post(API_CONFIG.ENDPOINTS.OBRAS, data, true, false),
-  update: (id: string, data: any) => ApiClient.put(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, data, true, false),
-  delete: (id: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, true, false),
+  getAll: (token?: string) => ApiClient.get(API_CONFIG.ENDPOINTS.OBRAS, true, false, token),
+  getById: (id: string, token?: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, true, false, token),
+  create: (data: any, token?: string) => ApiClient.post(API_CONFIG.ENDPOINTS.OBRAS, data, true, false, token),
+  update: (id: string, data: any, token?: string) => ApiClient.put(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, data, true, false, token),
+  delete: (id: string, token?: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.OBRAS}/${id}`, true, false, token),
 };
 
 export const MateriaisService = {
-  getAll: () => ApiClient.get(API_CONFIG.ENDPOINTS.MATERIAIS, true, false),
-  getById: (id: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, true, false),
-  create: (data: any) => ApiClient.post(API_CONFIG.ENDPOINTS.MATERIAIS, data, true, false),
-  update: (id: string, data: any) => ApiClient.put(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, data, true, false),
-  delete: (id: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, true, false),
+  getAll: (token?: string) => ApiClient.get(API_CONFIG.ENDPOINTS.MATERIAIS, true, false, token),
+  getById: (id: string, token?: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, true, false, token),
+  create: (data: any, token?: string) => ApiClient.post(API_CONFIG.ENDPOINTS.MATERIAIS, data, true, false, token),
+  update: (id: string, data: any, token?: string) => ApiClient.put(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, data, true, false, token),
+  delete: (id: string, token?: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.MATERIAIS}/${id}`, true, false, token),
 };
 
 export const EquipamentosService = {
-  getAll: () => ApiClient.get(API_CONFIG.ENDPOINTS.EQUIPAMENTOS, true, false),
-  getById: (id: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, true, false),
-  create: (data: any) => ApiClient.post(API_CONFIG.ENDPOINTS.EQUIPAMENTOS, data, true, false),
-  update: (id: string, data: any) => ApiClient.put(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, data, true, false),
-  delete: (id: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, true, false),
+  getAll: (token?: string) => ApiClient.get(API_CONFIG.ENDPOINTS.EQUIPAMENTOS, true, false, token),
+  getById: (id: string, token?: string) => ApiClient.get(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, true, false, token),
+  create: (data: any, token?: string) => ApiClient.post(API_CONFIG.ENDPOINTS.EQUIPAMENTOS, data, true, false, token),
+  update: (id: string, data: any, token?: string) => ApiClient.put(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, data, true, false, token),
+  delete: (id: string, token?: string) => ApiClient.delete(`${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}`, true, false, token),
 };

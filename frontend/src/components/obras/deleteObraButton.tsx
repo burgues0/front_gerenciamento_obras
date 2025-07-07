@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { obrasService } from "@/services/obrasService";
+import { ObrasService } from "@/lib/api";
 
 interface DeleteObraButtonProps {
   obraId: number;
@@ -19,7 +19,7 @@ export default function DeleteObraButton({ obraId, onSuccess }: DeleteObraButton
     setIsLoading(true);
     setError(null);
     try {
-      await obrasService.deleteObra(obraId);
+      await ObrasService.delete(obraId.toString());
       onSuccess();
       setIsOpen(false);
     } catch (err: any) {

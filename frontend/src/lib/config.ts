@@ -1,6 +1,6 @@
 export const API_CONFIG = {
   AUTH_BASE_URL: 'http://localhost:3001',
-  OBRAS_BASE_URL: 'http://localhost:3000',
+  OBRAS_BASE_URL: 'http://localhost:3000/api',
   ENDPOINTS: {
     AUTH: {
       LOGIN: '/auth/login',

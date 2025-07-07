@@ -9,6 +9,12 @@ import { User, Lock } from "lucide-react";
 import { API_CONFIG } from "@/lib/config";
 import { AuthService } from "@/lib/api";
 
+// Salva o token no localStorage também, para compatibilidade com o novo serviço
+function setAuthToken(token: string) {
+  document.cookie = `auth-token=${token}; path=/; max-age=86400`;
+  localStorage.setItem('auth-token', token);
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -24,7 +30,7 @@ export default function LoginPage() {
     
     try {
       const data = await AuthService.login(email, password);
-      document.cookie = `auth-token=${data.token}; path=/; max-age=86400`;
+      setAuthToken(data.token);
       const redirectTo = searchParams.get("redirect") || "/";
       window.location.href = redirectTo;
     } catch (err: any) {
