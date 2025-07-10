@@ -59,14 +59,13 @@ export class CreateEquipamentoDto {
   })
   estado?: string;
 
-  @IsOptional()
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => Number)
-  @ApiPropertyOptional({
-    example: [1, 2],
-    description: 'Lista de IDs das obras associadas ao equipamento (opcional)',
-    type: [Number],
-  })
-  obrasId?: number[];
+@IsOptional()
+@IsArray()
+@IsNumber({}, { each: true })  
+@ApiPropertyOptional({
+  example: [1, 2],
+  description: 'Lista de IDs das obras associadas ao equipamento (opcional)',
+  type: [Number],
+})
+obrasId?: number[];
 }
