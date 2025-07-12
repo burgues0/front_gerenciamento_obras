@@ -78,6 +78,7 @@ export class SeedService implements OnModuleInit {
 
   async clearAll() {
     // A ordem de destruição é importante para respeitar as chaves estrangeiras
+    await this.diarioMateriaisModel.destroy({ where: {}, truncate: true, cascade: true, force: true });
     await this.obrasFiscalizacoesModel.destroy({ where: {}, truncate: true, cascade: true, force: true });
     await this.obraResponsavelTecnicoModel.destroy({ where: {}, truncate: true, cascade: true, force: true });
     await this.obrasEquipamentosModel.destroy({ where: {}, truncate: true, cascade: true, force: true });
@@ -153,11 +154,12 @@ export class SeedService implements OnModuleInit {
     const obras: Obras[] = [];
     const responsaveisTecnicos: ResponsavelTecnico[] = [];
     const fiscalizacoes: Fiscalizacoes[] = [];
+    const materiais: Material[] = [];
 
     // Material
     for (let i = 0; i < 12; i++) {
       const template = faker.helpers.arrayElement(templatesDeMaterial);
-      await this.materialModel.create({
+      const material = await this.materialModel.create({
         codigo: `MAT-${faker.string.alphanumeric(5).toUpperCase()}`,
         nome: template.nome,
         unidadeMedida: template.unidade,
@@ -166,6 +168,7 @@ export class SeedService implements OnModuleInit {
         fabricante: faker.helpers.arrayElement(template.fabricantes),
         modelo: faker.string.alphanumeric(10),
       } as any);
+      materiais.push(material);
     }
 
     // ResponsavelTecnico
@@ -372,12 +375,17 @@ export class SeedService implements OnModuleInit {
         obraId: obraAleatoria.id,
       } as any);
 
-      const selectedMateriais = faker.helpers.arrayElements(await this.materialModel.findAll(), faker.number.int({ min: 2, max: 3 }));
-      for (const material of selectedMateriais) {
-        await this.diarioMateriaisModel.create({
-          diarioDeObraId: diario.id,
-          materialId: material.id,
-        } as any);
+      // Criar relacionamentos entre diário de obra e materiais
+      if (materiais.length > 0) {
+        const quantidadeMateriais = faker.number.int({ min: 2, max: Math.min(5, materiais.length) });
+        const selectedMateriais = faker.helpers.arrayElements(materiais, quantidadeMateriais);
+        
+        for (const material of selectedMateriais) {
+          await this.diarioMateriaisModel.create({
+            diarioDeObraId: diario.id,
+            materialId: material.id,
+          } as any);
+        }
       }
     }
 
