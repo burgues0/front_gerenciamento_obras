@@ -155,6 +155,37 @@ export class ApiClient {
 
     return response.json();
   }
+
+  static async patch(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false, token?: string) {
+    const baseUrl = this.getBaseUrl(isAuthEndpoint);
+    
+    try {
+      const fetchOptions: RequestInit = {
+        method: 'PATCH',
+        headers: this.getHeaders(includeAuth, token),
+        body: JSON.stringify(data),
+      };
+      if (includeAuth && !token) {
+        fetchOptions.credentials = 'include';
+      }
+      const response = await fetch(`${baseUrl}${endpoint}`, fetchOptions);
+
+      if (!response.ok) {
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = { message: `HTTP ${response.status}: ${response.statusText}` };
+        }
+        throw new Error(errorData.message || 'Erro na requisição');
+      }
+
+      return response.json();
+    } catch (error) {
+      console.error('Erro na requisição PATCH:', error);
+      throw error;
+    }
+  }
 }
 
 export const AuthService = {
