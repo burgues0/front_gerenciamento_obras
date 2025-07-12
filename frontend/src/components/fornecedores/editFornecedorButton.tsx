@@ -28,7 +28,6 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
     endereco: ''
   });
 
-  // Estados para gestão de obras
   const [obras, setObras] = useState<Obra[]>([]);
   const [selectedObras, setSelectedObras] = useState<number[]>([]);
   const [filtroObras, setFiltroObras] = useState<string>('');
@@ -60,7 +59,6 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
   };
 
   const obrasDisponiveis = useMemo(() => {
-    // Mostrar TODAS as obras, incluindo as selecionadas
     if (!filtroObras.trim()) {
       return obras;
     }
@@ -83,7 +81,7 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
   const handleInputChange = (field: keyof UpdateFornecedorDto, value: string | boolean) => {
     if (field === 'cnpj' && typeof value === 'string') {
       // Formatação do CNPJ: XX.XXX.XXX/XXXX-XX
-      const cnpj = value.replace(/\D/g, ''); // Remove tudo que não é dígito
+      const cnpj = value.replace(/\D/g, '');
       let formattedCnpj = cnpj;
       
       if (cnpj.length > 2) {
@@ -105,7 +103,7 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
       }));
     } else if (field === 'telefone' && typeof value === 'string') {
       // Formatação do telefone: (XX) XXXXX-XXXX
-      const telefone = value.replace(/\D/g, ''); // Remove tudo que não é dígito
+      const telefone = value.replace(/\D/g, '');
       let formattedTelefone = telefone;
       
       if (telefone.length > 0) {
@@ -136,16 +134,14 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
     setError(null);
 
     try {
-      // Criar objeto apenas com campos preenchidos
       const dadosLimpos: Partial<UpdateFornecedorDto> = {};
       
       if (formData.nome?.trim()) dadosLimpos.nome = formData.nome.trim();
-      if (formData.cnpj?.trim()) dadosLimpos.cnpj = formData.cnpj.replace(/\D/g, ''); // Remove formatação do CNPJ
-      if (formData.telefone?.trim()) dadosLimpos.telefone = formData.telefone.trim(); // Mantém formatação do telefone
+      if (formData.cnpj?.trim()) dadosLimpos.cnpj = formData.cnpj.replace(/\D/g, '');
+      if (formData.telefone?.trim()) dadosLimpos.telefone = formData.telefone.trim();
       if (formData.email?.trim()) dadosLimpos.email = formData.email.trim();
       if (formData.endereco?.trim()) dadosLimpos.endereco = formData.endereco.trim();
       
-      // Incluir obras selecionadas se houver alguma
       if (selectedObras.length > 0) {
         dadosLimpos.obrasId = selectedObras;
       }
@@ -159,7 +155,6 @@ export default function EditFornecedorButton({ fornecedor, onSuccess }: EditForn
       onSuccess();
     } catch (err: unknown) {
       const error = err as Error;
-      // Remove "Erro ao atualizar fornecedor:" se já estiver na mensagem
       let errorMessage = error.message || "Erro ao atualizar fornecedor";
       if (errorMessage.startsWith("Erro ao atualizar fornecedor:")) {
         errorMessage = errorMessage.replace("Erro ao atualizar fornecedor:", "").trim();
