@@ -134,7 +134,18 @@ export class ApiClient {
       throw new Error(errorData.message || 'Erro na requisição');
     }
 
-    return response.json();
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+    
+    if (!contentType?.includes('application/json') || contentLength === '0' || response.status === 204) {
+      return;
+    }
+
+    try {
+      return await response.json();
+    } catch {
+      return;
+    }
   }
 
   static async delete(endpoint: string, includeAuth = true, isAuthEndpoint = false, token?: string) {
@@ -153,7 +164,18 @@ export class ApiClient {
       throw new Error(errorData.message || 'Erro na requisição');
     }
 
-    return response.json();
+    const contentType = response.headers.get('content-type');
+    const contentLength = response.headers.get('content-length');
+    
+    if (!contentType?.includes('application/json') || contentLength === '0' || response.status === 204) {
+      return;
+    }
+
+    try {
+      return await response.json();
+    } catch {
+      return;
+    }
   }
 
   static async patch(endpoint: string, data: any, includeAuth = true, isAuthEndpoint = false, token?: string) {

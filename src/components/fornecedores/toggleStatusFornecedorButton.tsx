@@ -31,7 +31,6 @@ export default function ToggleStatusFornecedorButton({ fornecedor, onSuccess }: 
       onSuccess();
     } catch (err: unknown) {
       const error = err as Error;
-      // Remove "Erro ao alterar status:" se já estiver na mensagem
       let errorMessage = error.message || "Erro ao alterar status do fornecedor";
       if (errorMessage.startsWith("Erro ao alterar status:")) {
         errorMessage = errorMessage.replace("Erro ao alterar status:", "").trim();

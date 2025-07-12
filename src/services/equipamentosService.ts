@@ -123,7 +123,6 @@ export const equipamentosService = {
         message: `HTTP ${response.status} - ${response.statusText}` 
       }));
       
-      // Se for 404 ou 405, pode ser que o endpoint não esteja implementado
       if (response.status === 404) {
         throw new Error(`Endpoint não encontrado (404): PATCH ${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id} não está implementado no backend`);
       } else if (response.status === 405) {
@@ -137,7 +136,6 @@ export const equipamentosService = {
     return resultado;
   },
 
-  // Método alternativo para associar obras usando PUT se PATCH não funcionar
   async updateEquipamentoObrasPUT(id: number, obras: UpdateEquipamentoObrasDto): Promise<Equipamento> {
     
     const response = await fetch(`${API_CONFIG.OBRAS_BASE_URL}${API_CONFIG.ENDPOINTS.EQUIPAMENTOS}/${id}/obras`, {
