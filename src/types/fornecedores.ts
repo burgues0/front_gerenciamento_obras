@@ -5,6 +5,17 @@ export interface Fornecedor {
   telefone: string;
   email: string;
   endereco: string;
+  ativo: boolean;
+}
+
+export interface Obra {
+  id: number;
+  data_conclusao?: string;
+  data_inicio: string;
+  nome: string;
+  orcamento_total: number;
+  percentual_concluido: number;
+  status: string;
 }
 
 export interface CreateFornecedorDto {
@@ -13,6 +24,8 @@ export interface CreateFornecedorDto {
   telefone: string;
   email: string;
   endereco: string;
+  ativo?: boolean;
+  obrasId?: number[];
 }
 
 export interface UpdateFornecedorDto {
@@ -21,4 +34,10 @@ export interface UpdateFornecedorDto {
   telefone?: string;
   email?: string;
   endereco?: string;
+  ativo?: boolean;
+  obrasId?: number[];
+}
+
+export interface UpdateFornecedorObrasDto {
+  obraIds: number[];
 }
